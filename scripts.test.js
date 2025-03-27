@@ -51,7 +51,7 @@ describe('Gameboard Tests', () => {
     });
 });
 
-describe('Ship Placement', () => {
+describe('Ship Placement vertically', () => {
     let gameboard = new Gameboard(10, 10, () => 0, () => 0);
 
     test('place ship vertically', () => {
@@ -63,7 +63,7 @@ describe('Ship Placement', () => {
     });
 });
 
-describe('Ship Placement', () => {
+describe('Ship Placement horizontally', () => {
     let gameboard = new Gameboard(10, 10, () => 0, () => 1);
 
     test('place ship horizontally', () => {
@@ -72,6 +72,4 @@ describe('Ship Placement', () => {
         const coords = gameboard.shipCoords[0];
         expect(coords).toStrictEqual([[0,0], [0,1], [0,2]]);
     });
-
-
 })

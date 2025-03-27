@@ -35,6 +35,12 @@ class Gameboard {
     }
 
     placeShip(ship) {
+        let coordinates = this.getValidPlacement(ship);
+        this.ships.push(ship);
+        this.shipCoords.push(coordinates);
+    }
+
+    getValidPlacement(ship) {
         // Find coordinates to place ship
         // Break loop if an section of coordinates is found.
 
@@ -65,15 +71,30 @@ class Gameboard {
                     sum += this.board[placeRow][placeCol+i];
                 }
             }
+            if (!this.isValidCoordinates(coordinates)) {
+                sum = 0;
+            }
         }
+        return coordinates
+    };
 
-        this.ships.push(ship);
-        this.shipCoords.push(coordinates);
-    }
+    // Match list of coordinates to existing ship coordinates
+    isValidCoordinates(coordinateList) {
+        for (let i=0; i<coordinateList.length; i++) {
+            if (!this.isValidCoord(coordinateList[i])) return false;
+        }
+        return true;
+    };
 
-    getValidPlacement(ship) {
-
-    }
+    // For matching one coordinate to existing ship coordinates
+    isValidCoord(coordinates) {
+        for (let i = 0; i<this.shipCoords.length; i++) {
+            for (let j=0; j<this.shipCoords[i].length; j++) {
+                if (this.shipCoords[i][j] === coordinates) return false;
+            }
+        }
+        return true;
+    };
 
     receiveAttack(x,y) {
         // when receiving an attack that is not a duplicate, iterate through ship coordinates
