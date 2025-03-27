@@ -78,5 +78,11 @@ describe('Ship Placement horizontally', () => {
         gameboard.receiveAttack(0,0);
         expect(gameboard.board[0][0]).toBe(1);
         expect(gameboard.ships[0].hits).toBe(1);
+        expect(gameboard.misses).toBe(0);
+
+        gameboard.receiveAttack(1,1);
+        expect(gameboard.board[0][0]).toBe(1);
+        expect(gameboard.ships[0].hits).toBe(1);
+        expect(gameboard.misses).toBe(1);
     })
 })

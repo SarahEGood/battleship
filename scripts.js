@@ -32,6 +32,7 @@ class Gameboard {
         this.shipCoords = [];
         this.randomFunction = randomFunction;
         this.verticalFunc = verticalFunc;
+        this.misses = 0;
     }
 
     placeShip(ship) {
@@ -107,7 +108,7 @@ class Gameboard {
             if (this.checkSunk()) {
                 console.log("All ships have been sunk!")
             }
-        }
+        } else this.misses += 1;
         
     }
 
