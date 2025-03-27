@@ -99,22 +99,29 @@ class Gameboard {
     receiveAttack(x,y) {
         // when receiving an attack that is not a duplicate, iterate through ship coordinates
         // If a ship's coordinates are hit, update the ship object with a new hit counter.
-        if (this.board[x][y] == 0) {
-            this.board[x][y] = 1;
-            for (let i = 0; i < this.ships.length; i++) {
-                for (let j=0; j< this.shipCoords.length; j++) {
-                    const ship_x = this.shipCoords[j][0];
-                    const ship_y = this.shipCoords[j][1];
-                    if (x == ship_x && y == ship_y) {
-                        this.ships[i].hit();
-                        if (this.checkSunk()) {
-                            console.log("All ships have been sunk!");
-                        }
-                        // Increment j and i to high levels to terminate loop
-                        //  since ship coords should not overlap
-                        j = 1000;
-                        i = 1000;
-                    }
+        if (this.isDupAttack(x,y)) return;
+        this.board[x][y] = 1;
+        const hitShip = this.checkHit(x,y);
+        if (hitShip) {
+            hitShip.hit();
+            if (this.checkSunk()) {
+                console.log("All ships have been sunk!")
+            }
+        }
+        
+    }
+
+    isDupAttack(x, y) {
+        return this.board[x][y] !== 0;
+    }
+
+    checkHit(x, y) {
+        for (let i = 0; i < this.ships.length; i++) {
+            for (let j=0; j< this.shipCoords.length; j++) {
+                const ship_x = this.shipCoords[i][j][0];
+                const ship_y = this.shipCoords[i][j][1];
+                if (x == ship_x && y == ship_y) {
+                    return this.ships[i];
                 }
             }
         }

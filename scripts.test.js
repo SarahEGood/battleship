@@ -67,9 +67,16 @@ describe('Ship Placement horizontally', () => {
     let gameboard = new Gameboard(10, 10, () => 0, () => 1);
 
     test('place ship horizontally', () => {
-        gameboard.placeShip({ length: 3 });
+        const ship = new Ship(3);
+        gameboard.placeShip(ship);
 
         const coords = gameboard.shipCoords[0];
         expect(coords).toStrictEqual([[0,0], [0,1], [0,2]]);
     });
+
+    test('receive an attack (hit)', () => {
+        gameboard.receiveAttack(0,0);
+        expect(gameboard.board[0][0]).toBe(1);
+        expect(gameboard.ships[0].hits).toBe(1);
+    })
 })
