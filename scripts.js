@@ -14,6 +14,9 @@ for (let row = 0; row < 10; row++) {
             if (!selectedBox.classList.contains('.attacked')) {
                 cpu.gameBoard.receiveAttack(row, col);
                 selectedBox.classList.add('attacked');
+                if (cpu.gameBoard.checkHit(row, col)) {
+                    selectedBox.innerHTML = 'X';
+                }
             }
         })
         gridContainer1.appendChild(cell);

@@ -86,3 +86,8 @@ describe('Ship Placement horizontally', () => {
         expect(gameboard.misses).toBe(1);
     })
 })
+
+describe('Instantiate Player', () => {
+    let player = new Player('control');
+    expect(player.gameBoard.ships.length).toBe(5);
+})

@@ -56,16 +56,16 @@ class Gameboard {
             is_vert = Math.round(this.verticalFunc());
             coordinates = [];
             if (is_vert == 0) {
-                placeRow = Math.floor(this.randomFunction()*this.y) || 0;
-                placeCol = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
+                placeRow = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
+                placeCol = Math.floor(this.randomFunction()*(this.y)) || 0;
                 sum = 0;
                 for (let i=0; i<ship.length; i++) {
                     sum += this.board[placeRow+i][placeCol];
                     coordinates.push([placeRow+i, placeCol]);
                 }
             } else {
-                placeCol = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
-                placeRow = Math.floor(this.randomFunction()*this.y) || 0;
+                placeCol = Math.floor(this.randomFunction()*this.x) || 0;
+                placeRow = Math.floor(this.randomFunction()*(this.y-(ship.length-1))) || 0;
                 sum = 0
                 for (let i = 0; i<ship.length; i++) {
                     coordinates.push([placeRow, placeCol+i]);
@@ -91,7 +91,9 @@ class Gameboard {
     isValidCoord(coordinates) {
         for (let i = 0; i<this.shipCoords.length; i++) {
             for (let j=0; j<this.shipCoords[i].length; j++) {
-                if (this.shipCoords[i][j] === coordinates) return false;
+                if (this.shipCoords[i][j][0] == coordinates[0] &&
+                    this.shipCoords[i][j][1] == coordinates[1]
+                ) return false;
             }
         }
         return true;
@@ -119,10 +121,13 @@ class Gameboard {
     checkHit(x, y) {
         for (let i = 0; i < this.ships.length; i++) {
             for (let j=0; j< this.shipCoords.length; j++) {
-                const ship_x = this.shipCoords[i][j][0];
-                const ship_y = this.shipCoords[i][j][1];
-                if (x == ship_x && y == ship_y) {
-                    return this.ships[i];
+                console.log(this.shipCoords[i][j]);
+                if (this.shipCoords[i][j]) {
+                    const ship_x = this.shipCoords[i][j][0];
+                    const ship_y = this.shipCoords[i][j][1];
+                    if (x == ship_x && y == ship_y) {
+                        return this.ships[i];
+                    }
                 }
             }
         }
@@ -140,17 +145,15 @@ class Gameboard {
 }
 
 class Player {
-    constructor(control) {
+    constructor(control='control') {
         this.control = control;
         this.gameBoard = new Gameboard();
-    }
-}
-
-class Game {
-    constructor(p1, p2) {
-        this.p1 = p1;
-        this.p2 = p2;
-        this.turn = 1;
+        const shiplengths = [5, 4, 3, 3, 2];
+        let ship;
+        for (let i = 0; i<shiplengths.length; i++) {
+            ship = new Ship(shiplengths[i]);
+            this.gameBoard.placeShip(ship);
+        }
     }
 }
 
