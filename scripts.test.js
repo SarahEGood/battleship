@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { Ship, Gameboard, Player } from './scripts.js'; // Using named imports
+import { Ship, Gameboard, Player } from './gameObjects.js'; // Using named imports
 
 // Ship Tests
 describe('Ship tests', () => {
