@@ -20,3 +20,7 @@
     grid-template-columns: auto auto;
     column-gap: 40px;
 }
+
+.attacked {
+    background-color: lightcoral;
+}

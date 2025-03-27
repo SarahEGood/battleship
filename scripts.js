@@ -9,6 +9,13 @@ for (let row = 0; row < 10; row++) {
         const cell = document.createElement('div');
         cell.classList.add('grid-item');
         cell.id = `1-cell-${row}-${col}`;
+        cell.addEventListener('click', function handleClick(event) {
+            let selectedBox = event.target;
+            if (!selectedBox.classList.contains('.attacked')) {
+                cpu.gameBoard.receiveAttack(row, col);
+                selectedBox.classList.add('attacked');
+            }
+        })
         gridContainer1.appendChild(cell);
     }
 }
@@ -19,5 +26,13 @@ for (let row = 0; row < 10; row++) {
         cell.classList.add('grid-item');
         cell.id = `2-cell-${row}-${col}`;
         gridContainer2.appendChild(cell);
+    }
+}
+
+let turn = 1;
+
+while (!p1.checkSunk() && !cpu.checkSunk()) {
+    if (turn === 1) {
+
     }
 }
