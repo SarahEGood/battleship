@@ -22,16 +22,16 @@ class Ship {
 }
 
 class Gameboard {
-    constructor(x = 10, y = 10, randomFunction = Math.random) {
+    constructor(x = 10, y = 10, randomFunction = Math.random, verticalFunc = Math.random) {
         // Board varibale to record hits
         this.board = Array.from({ length: y }, () => new Array(x).fill(0));
-        console.log(this.board);
         // Store length/width for convenience
         this.x = x;
         this.y = y;
         this.ships = [];
         this.shipCoords = [];
         this.randomFunction = randomFunction;
+        this.verticalFunc = verticalFunc;
     }
 
     placeShip(ship) {
@@ -41,24 +41,24 @@ class Gameboard {
         // Instantiate these variables to write to in if/else statement
         let placeRow = 0;
         let placeCol = 0;
-        let is_vert = Math.round(this.randomFunction);
+        let is_vert = Math.round(this.verticalFunc());
         let coordinates = [];
         let sum = 1;
         while (sum > 0) {
             // if 1, ship is placed vertically, else horizontally, in grid
-            is_vert = Math.round(this.randomFunction);
+            is_vert = Math.round(this.verticalFunc());
             coordinates = [];
-            if (!is_vert) {
-                placeRow = Math.floor(this.randomFunction*this.y) || 0;
-                placeCol = Math.floor(this.randomFunction*(this.x-(ship.length-1))) || 0;
+            if (is_vert == 0) {
+                placeRow = Math.floor(this.randomFunction()*this.y) || 0;
+                placeCol = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
                 sum = 0;
                 for (let i=0; i<ship.length; i++) {
                     sum += this.board[placeRow+i][placeCol];
                     coordinates.push([placeRow+i, placeCol]);
                 }
             } else {
-                placeCol = Math.floor(this.randomFunction*(this.x-(ship.length-1))) || 0;
-                placeRow = Math.floor(this.randomFunction*this.y) || 0;
+                placeCol = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
+                placeRow = Math.floor(this.randomFunction()*this.y) || 0;
                 sum = 0
                 for (let i = 0; i<ship.length; i++) {
                     coordinates.push([placeRow, placeCol+i]);

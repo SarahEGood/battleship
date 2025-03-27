@@ -52,13 +52,26 @@ describe('Gameboard Tests', () => {
 });
 
 describe('Ship Placement', () => {
-    let gameboard = new Gameboard(10, 10, () => 0);
+    let gameboard = new Gameboard(10, 10, () => 0, () => 0);
 
-    test('Initialize board correctly', () => {
-        const ship = new Ship(2);
+    test('place ship vertically', () => {
+        const ship = new Ship(3);
         gameboard.placeShip(ship);
 
         const coords = gameboard.shipCoords[0];
-        expect(coords).toStrictEqual([[0,0], [1,0]]);
+        expect(coords).toStrictEqual([[0,0], [1,0], [2,0]]);
     });
+});
+
+describe('Ship Placement', () => {
+    let gameboard = new Gameboard(10, 10, () => 0, () => 1);
+
+    test('place ship horizontally', () => {
+        gameboard.placeShip({ length: 3 });
+
+        const coords = gameboard.shipCoords[0];
+        expect(coords).toStrictEqual([[0,0], [0,1], [0,2]]);
+    });
+
+
 })
