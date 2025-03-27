@@ -49,6 +49,16 @@ describe('Gameboard Tests', () => {
         expect(gameboard.ships).toStrictEqual([]);
         expect(gameboard.shipCoords).toStrictEqual([]);
     });
-
-    test('Place ship')
 });
+
+describe('Ship Placement', () => {
+    let gameboard = new Gameboard(10, 10, () => 0);
+
+    test('Initialize board correctly', () => {
+        const ship = new Ship(2);
+        gameboard.placeShip(ship);
+
+        const coords = gameboard.shipCoords[0];
+        expect(coords).toStrictEqual([[0,0], [1,0]]);
+    });
+})

@@ -25,6 +25,7 @@ class Gameboard {
     constructor(x = 10, y = 10, randomFunction = Math.random) {
         // Board varibale to record hits
         this.board = Array.from({ length: y }, () => new Array(x).fill(0));
+        console.log(this.board);
         // Store length/width for convenience
         this.x = x;
         this.y = y;
@@ -38,35 +39,40 @@ class Gameboard {
         // Break loop if an section of coordinates is found.
 
         // Instantiate these variables to write to in if/else statement
-        const placeRow = 0;
-        const placeCol = 0;
-        const is_vert = Math.round(Math.random());
-        const coordinates = [];
+        let placeRow = 0;
+        let placeCol = 0;
+        let is_vert = Math.round(this.randomFunction);
+        let coordinates = [];
+        let sum = 1;
         while (sum > 0) {
             // if 1, ship is placed vertically, else horizontally, in grid
-            is_vert = Math.round(Math.random());
+            is_vert = Math.round(this.randomFunction);
             coordinates = [];
             if (!is_vert) {
-                placeRow = Math.floor(Math.random()*this.y);
-                placeCol = Math.floor(Math.random()*(this.x-(ship.length-1)));
-                const sliced = this.board[placeRow].slice(placeCol, placeCol+ship.length-1);
-                sum = sliced.reduce(add, 0);
+                placeRow = Math.floor(this.randomFunction*this.y) || 0;
+                placeCol = Math.floor(this.randomFunction*(this.x-(ship.length-1))) || 0;
+                sum = 0;
                 for (let i=0; i<ship.length; i++) {
-                    coordinates.push([placeRow, placeCol+i]);
-                }
-            } else {
-                placeCol = Math.floor(Math.random()*(this.x-(ship.length-1)));
-                placeRow = Math.floor(Math.random()*this.y);
-                sum = 0
-                for (let i = 0; i<ship.length; i++) {
                     sum += this.board[placeRow+i][placeCol];
                     coordinates.push([placeRow+i, placeCol]);
+                }
+            } else {
+                placeCol = Math.floor(this.randomFunction*(this.x-(ship.length-1))) || 0;
+                placeRow = Math.floor(this.randomFunction*this.y) || 0;
+                sum = 0
+                for (let i = 0; i<ship.length; i++) {
+                    coordinates.push([placeRow, placeCol+i]);
+                    sum += this.board[placeRow][placeCol+i];
                 }
             }
         }
 
         this.ships.push(ship);
-        this.shipCoords.push({placeRow, placeCol, is_vert});
+        this.shipCoords.push(coordinates);
+    }
+
+    getValidPlacement(ship) {
+
     }
 
     receiveAttack(x,y) {
