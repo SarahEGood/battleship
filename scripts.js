@@ -33,9 +33,3 @@ for (let row = 0; row < 10; row++) {
 }
 
 let turn = 1;
-
-while (!p1.checkSunk() && !cpu.checkSunk()) {
-    if (turn === 1) {
-
-    }
-}
