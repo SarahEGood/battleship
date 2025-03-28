@@ -157,7 +157,7 @@ class Player {
     }
     
     cpuTurn(otherplayer) {
-        const attack = cpuAttack(otherplayer);
+        const attack = this.cpuAttack(otherplayer);
         otherplayer.gameBoard.receiveAttack(attack[0], attack[1]);
     }
 
@@ -174,15 +174,7 @@ class Player {
     }
 
     checkValidAttack(x, y, otherPlayer) {
-        const otherships = otherPlayer.gameBoard.shipCoords;
-        for (let i = 0; i < otherships.length; i++) {
-            for (let j=0; j < otherships[i].length; j++) {
-                if (otherships[i][j][0] === x && otherships[i][j][1] === y) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return otherPlayer.gameBoard.board[x][y] === 0; // Allow attacks on ship cells too
     }
 }
 

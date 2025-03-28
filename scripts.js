@@ -3,6 +3,23 @@ import { Ship, Gameboard, Player } from './gameObjects.js';
 let p1 = new Player('human');
 let cpu = new Player('cpu');
 
+function updateCpuBoard() {
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            const cell = document.getElementById(`2-cell-${row}-${col}`);
+            if (!cell.classList.contains('attacked')) {
+                if (p1.gameBoard.board[row][col] !== 0) {  // Attack happened here
+                    cell.classList.add('attacked');
+                    const hitShip = p1.gameBoard.checkHit(row, col);
+                    if (hitShip) {
+                        cell.innerHTML = 'X'; // Mark the hit with "X"
+                    }
+                }
+            }
+        }
+    }
+};
+
 const gridContainer1 = document.getElementById('grid-container-1');
 for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
@@ -17,6 +34,7 @@ for (let row = 0; row < 10; row++) {
                 if (cpu.gameBoard.checkHit(row, col)) {
                     selectedBox.innerHTML = 'X';
                 }
+                cpuTurn();
             }
         })
         gridContainer1.appendChild(cell);
@@ -33,3 +51,10 @@ for (let row = 0; row < 10; row++) {
 }
 
 let turn = 1;
+
+function cpuTurn() {
+    console.log(cpu); // Check if cpu is an instance of Player
+    console.log(cpu.cpuAttack);
+    cpu.cpuTurn(p1);  // CPU attacks human player
+    updateCpuBoard(); // Update the CPU's attack grid
+}
