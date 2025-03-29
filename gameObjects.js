@@ -103,14 +103,16 @@ class Gameboard {
         // when receiving an attack that is not a duplicate, iterate through ship coordinates
         // If a ship's coordinates are hit, update the ship object with a new hit counter.
         if (this.isDupAttack(x,y)) return;
-        this.board[x][y] = 1;
-        const hitShip = this.checkHit(x,y);
-        if (hitShip) {
-            hitShip.hit();
-            if (this.checkSunk()) {
-                console.log("All ships have been sunk!")
-            }
-        } else this.misses += 1;
+        else {
+            this.board[x][y] = 1;
+            const hitShip = this.checkHit(x,y);
+            if (hitShip) {
+                hitShip.hit();
+                if (this.checkSunk()) {
+                    console.log("All ships have been sunk!")
+                }
+            } else this.misses += 1;
+        }
         
     }
 

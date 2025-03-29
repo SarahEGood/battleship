@@ -15,6 +15,9 @@ function updateCpuBoard() {
                         cell.innerHTML = 'X'; // Mark the hit with "X"
                     }
                 }
+                const missct = p1.gameBoard.misses.toString();
+                const missUpdate = document.getElementById('p2-miss');
+                missUpdate.innerHTML = "CPU misses: " + missct;
             }
         }
     }
@@ -28,12 +31,15 @@ for (let row = 0; row < 10; row++) {
         cell.id = `1-cell-${row}-${col}`;
         cell.addEventListener('click', function handleClick(event) {
             let selectedBox = event.target;
-            if (!selectedBox.classList.contains('.attacked')) {
+            if (!selectedBox.classList.contains('attacked')) {
                 cpu.gameBoard.receiveAttack(row, col);
                 selectedBox.classList.add('attacked');
                 if (cpu.gameBoard.checkHit(row, col)) {
                     selectedBox.innerHTML = 'X';
                 }
+                const missct = cpu.gameBoard.misses.toString();
+                const missUpdate = document.getElementById('p1-miss');
+                missUpdate.innerHTML = "P1 misses: " + missct;
                 cpuTurn();
             }
         })
