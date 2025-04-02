@@ -2,10 +2,60 @@ import { Ship, Gameboard, Player } from './gameObjects.js';
 
 let p1 = new Player('human');
 let cpu = new Player('cpu');
-console.log(cpu.gameBoard.shipCoords);
 
 let p1_status = p1.gameBoard.checkSunk();
 let cpu_status = cpu.gameBoard.checkSunk();
+
+function generateBoard1() {
+    let gridContainer1 = document.getElementById('grid-container-1');
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-item');
+            cell.id = `1-cell-${row}-${col}`;
+            cell.addEventListener('click', function handleClick(event) {
+                let selectedBox = event.target;
+                if (!selectedBox.classList.contains('attacked')) {
+                    cpu.gameBoard.receiveAttack(row, col);
+                    selectedBox.classList.add('attacked');
+                    if (cpu.gameBoard.checkHit(row, col)) {
+                        selectedBox.innerHTML = 'X';
+                    }
+                    const missct = cpu.gameBoard.misses.toString();
+                    const missUpdate = document.getElementById('p1-miss');
+                    missUpdate.innerHTML = "P1 misses: " + missct;
+                    cpu_status = cpu.gameBoard.checkSunk();
+                    if (cpu_status) {
+                        gameOver(cpu);
+                    }
+                    cpuTurn();
+                }
+            })
+            gridContainer1.appendChild(cell);
+        }
+    }
+}
+
+function generateBoard2() {
+    let gridContainer2 = document.getElementById('grid-container-2');
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-item');
+            cell.id = `2-cell-${row}-${col}`;
+            gridContainer2.appendChild(cell);
+        }
+    }
+}
+
+function clearBoards() {
+    const grid1 = document.getElementById('grid-container-1');
+    const grid2 = document.getElementById('grid-container-2');
+    const messageDiv = document.getElementById('gameover');
+    grid1.innerHTML = '';
+    grid2.innerHTML = '';
+    messageDiv.innerHTML = '';
+}
 
 function updateCpuBoard() {
     for (let row = 0; row < 10; row++) {
@@ -44,48 +94,22 @@ function gameOver(player) {
     const gameOverMessageHTML = document.createElement('h1');
     gameOverMessageHTML.innerHTML = gameOverMessage;
     startoverBtn.innerHTML = "startover";
+    startoverBtn.addEventListener('click', function startOver() {
+        clearBoards();
+        generateBoard1();
+        generateBoard2();
+        p1 = new Player('human');
+        cpu = new Player('cpu');
+        p1_status = p1.gameBoard.checkSunk();
+        cpu_status = cpu.gameBoard.checkSunk();
+    })
+
     gameOverDiv.appendChild(gameOverMessageHTML);
     gameOverDiv.appendChild(startoverBtn);
 }
 
-const gridContainer1 = document.getElementById('grid-container-1');
-for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-        const cell = document.createElement('div');
-        cell.classList.add('grid-item');
-        cell.id = `1-cell-${row}-${col}`;
-        cell.addEventListener('click', function handleClick(event) {
-            let selectedBox = event.target;
-            if (!selectedBox.classList.contains('attacked')) {
-                cpu.gameBoard.receiveAttack(row, col);
-                selectedBox.classList.add('attacked');
-                if (cpu.gameBoard.checkHit(row, col)) {
-                    selectedBox.innerHTML = 'X';
-                }
-                const missct = cpu.gameBoard.misses.toString();
-                const missUpdate = document.getElementById('p1-miss');
-                missUpdate.innerHTML = "P1 misses: " + missct;
-                cpu_status = cpu.gameBoard.checkSunk();
-                if (cpu_status) {
-                    gameOver(cpu);
-                }
-                cpuTurn();
-            }
-        })
-        gridContainer1.appendChild(cell);
-    }
-}
-const gridContainer2 = document.getElementById('grid-container-2');
-for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-        const cell = document.createElement('div');
-        cell.classList.add('grid-item');
-        cell.id = `2-cell-${row}-${col}`;
-        gridContainer2.appendChild(cell);
-    }
-}
-
-let turn = 1;
+generateBoard1();
+generateBoard2();
 
 function cpuTurn() {
     console.log(cpu); // Check if cpu is an instance of Player
