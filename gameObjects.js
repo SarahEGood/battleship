@@ -42,42 +42,56 @@ class Gameboard {
     }
 
     getValidPlacement(ship) {
-        // Find coordinates to place ship
-        // Break loop if an section of coordinates is found.
-
-        // Instantiate these variables to write to in if/else statement
         let placeRow = 0;
         let placeCol = 0;
-        let is_vert = Math.round(this.verticalFunc());
+        let is_vert = Math.round(this.verticalFunc()); // Random vertical or horizontal placement
         let coordinates = [];
         let sum = 1;
+    
+        // Keep trying until we find a valid placement
         while (sum > 0) {
-            // if 1, ship is placed vertically, else horizontally, in grid
-            is_vert = Math.round(this.verticalFunc());
             coordinates = [];
-            if (is_vert == 0) {
-                placeRow = Math.floor(this.randomFunction()*(this.x-(ship.length-1))) || 0;
-                placeCol = Math.floor(this.randomFunction()*(this.y)) || 0;
+            is_vert = Math.round(this.verticalFunc()); // Randomly decide vertical or horizontal
+    
+            if (is_vert == 0) { // Horizontal placement
+                placeRow = Math.floor(this.randomFunction() * this.y); // Random row
+                placeCol = Math.floor(this.randomFunction() * (this.x - ship.length)); // Random column, ensuring enough space for ship length
+    
                 sum = 0;
-                for (let i=0; i<ship.length; i++) {
-                    sum += this.board[placeRow+i][placeCol];
-                    coordinates.push([placeRow+i, placeCol]);
+                // Generate coordinates for the ship and check if each is valid
+                for (let i = 0; i < ship.length; i++) {
+                    const coord = [placeRow, placeCol + i];
+                    if (this.isValidCoord(coord)) {
+                        coordinates.push(coord); // Only add valid coordinates
+                    } else {
+                        sum += 1; // If any coordinate is invalid, break the loop
+                        break;
+                    }
                 }
-            } else {
-                placeCol = Math.floor(this.randomFunction()*this.x) || 0;
-                placeRow = Math.floor(this.randomFunction()*(this.y-(ship.length-1))) || 0;
-                sum = 0
-                for (let i = 0; i<ship.length; i++) {
-                    coordinates.push([placeRow, placeCol+i]);
-                    sum += this.board[placeRow][placeCol+i];
+            } else { // Vertical placement
+                placeRow = Math.floor(this.randomFunction() * (this.y - ship.length)); // Random row, ensuring enough space for ship length
+                placeCol = Math.floor(this.randomFunction() * this.x); // Random column
+    
+                sum = 0;
+                // Generate coordinates for the ship and check if each is valid
+                for (let i = 0; i < ship.length; i++) {
+                    const coord = [placeRow + i, placeCol];
+                    if (this.isValidCoord(coord)) {
+                        coordinates.push(coord); // Only add valid coordinates
+                    } else {
+                        sum += 1; // If any coordinate is invalid, break the loop
+                        break;
+                    }
                 }
             }
-            if (!this.isValidCoordinates(coordinates)) {
-                sum = 0;
+    
+            // If sum > 0, the ship overlaps, so we retry
+            if (sum > 0) {
+                coordinates = [];
             }
         }
-        return coordinates
-    };
+        return coordinates; // Return the valid coordinates for placement
+    }
 
     // Match list of coordinates to existing ship coordinates
     isValidCoordinates(coordinateList) {
@@ -89,15 +103,21 @@ class Gameboard {
 
     // For matching one coordinate to existing ship coordinates
     isValidCoord(coordinates) {
-        for (let i = 0; i<this.shipCoords.length; i++) {
-            for (let j=0; j<this.shipCoords[i].length; j++) {
-                if (this.shipCoords[i][j][0] == coordinates[0] &&
-                    this.shipCoords[i][j][1] == coordinates[1]
-                ) return false;
+        const [row, col] = coordinates;
+        if (row <= 0 || row > this.y || col <= 0 || col > this.x) {
+            return false; // If coordinates are outside of the board, they are invalid
+        }
+        // Now check if this coordinate is already occupied by another ship
+        for (let i = 0; i < this.shipCoords.length; i++) {
+            for (let j = 0; j < this.shipCoords[i].length; j++) {
+                const [existingRow, existingCol] = this.shipCoords[i][j];
+                if (existingRow === row && existingCol === col) {
+                    return false; // Overlapping with an existing ship
+                }
             }
         }
         return true;
-    };
+    }
 
     receiveAttack(x,y) {
         // when receiving an attack that is not a duplicate, iterate through ship coordinates
@@ -122,14 +142,10 @@ class Gameboard {
 
     checkHit(x, y) {
         for (let i = 0; i < this.ships.length; i++) {
-            for (let j=0; j< this.shipCoords.length; j++) {
-                console.log(this.shipCoords[i][j]);
-                if (this.shipCoords[i][j]) {
-                    const ship_x = this.shipCoords[i][j][0];
-                    const ship_y = this.shipCoords[i][j][1];
-                    if (x == ship_x && y == ship_y) {
-                        return this.ships[i];
-                    }
+            for (let j = 0; j < this.shipCoords[i].length; j++) {
+                const [ship_x, ship_y] = this.shipCoords[i][j];
+                if (x == ship_x && y == ship_y) {
+                    return this.ships[i]; // Found the ship
                 }
             }
         }
