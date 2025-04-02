@@ -2,6 +2,10 @@ import { Ship, Gameboard, Player } from './gameObjects.js';
 
 let p1 = new Player('human');
 let cpu = new Player('cpu');
+console.log(cpu.gameBoard.shipCoords);
+
+let p1_status = p1.gameBoard.checkSunk();
+let cpu_status = cpu.gameBoard.checkSunk();
 
 function updateCpuBoard() {
     for (let row = 0; row < 10; row++) {
@@ -18,10 +22,31 @@ function updateCpuBoard() {
                 const missct = p1.gameBoard.misses.toString();
                 const missUpdate = document.getElementById('p2-miss');
                 missUpdate.innerHTML = "CPU misses: " + missct;
+                p1_status = p1.gameBoard.checkSunk();
+                if (p1_status) {
+                    gameOver(p1);
+                }
             }
         }
     }
 };
+
+function gameOver(player) {
+    const gameOverDiv = document.getElementById('gameover');
+    const startoverBtn = document.createElement('button');
+
+    let gameOverMessage = "";
+    if (player.control == "human") {
+        gameOverMessage = "Sorry, you lose! :(";
+    } else {
+        gameOverMessage = "You win! :)";
+    }
+    const gameOverMessageHTML = document.createElement('h1');
+    gameOverMessageHTML.innerHTML = gameOverMessage;
+    startoverBtn.innerHTML = "startover";
+    gameOverDiv.appendChild(gameOverMessageHTML);
+    gameOverDiv.appendChild(startoverBtn);
+}
 
 const gridContainer1 = document.getElementById('grid-container-1');
 for (let row = 0; row < 10; row++) {
@@ -40,6 +65,10 @@ for (let row = 0; row < 10; row++) {
                 const missct = cpu.gameBoard.misses.toString();
                 const missUpdate = document.getElementById('p1-miss');
                 missUpdate.innerHTML = "P1 misses: " + missct;
+                cpu_status = cpu.gameBoard.checkSunk();
+                if (cpu_status) {
+                    gameOver(cpu);
+                }
                 cpuTurn();
             }
         })
