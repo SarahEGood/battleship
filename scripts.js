@@ -1,10 +1,30 @@
 import { Ship, Gameboard, Player } from './gameObjects.js';
 
+let cellEventHandlers = [];
 let p1 = new Player('human');
 let cpu = new Player('cpu');
 
 let p1_status = p1.gameBoard.checkSunk();
 let cpu_status = cpu.gameBoard.checkSunk();
+
+function handleCellClick(event, row, col) {
+    let selectedBox = event.target;
+    if (!selectedBox.classList.contains('attacked')) {
+        cpu.gameBoard.receiveAttack(row, col);
+        selectedBox.classList.add('attacked');
+        if (cpu.gameBoard.checkHit(row, col)) {
+            selectedBox.innerHTML = 'X';
+        }
+        const missct = cpu.gameBoard.misses.toString();
+        const missUpdate = document.getElementById('p1-miss');
+        missUpdate.innerHTML = "P1 misses: " + missct;
+        cpu_status = cpu.gameBoard.checkSunk();
+        if (cpu_status) {
+            gameOver(cpu);
+        }
+        cpuTurn();
+    }
+}
 
 function generateBoard1() {
     let gridContainer1 = document.getElementById('grid-container-1');
@@ -13,24 +33,13 @@ function generateBoard1() {
             const cell = document.createElement('div');
             cell.classList.add('grid-item');
             cell.id = `1-cell-${row}-${col}`;
-            cell.addEventListener('click', function handleClick(event) {
-                let selectedBox = event.target;
-                if (!selectedBox.classList.contains('attacked')) {
-                    cpu.gameBoard.receiveAttack(row, col);
-                    selectedBox.classList.add('attacked');
-                    if (cpu.gameBoard.checkHit(row, col)) {
-                        selectedBox.innerHTML = 'X';
-                    }
-                    const missct = cpu.gameBoard.misses.toString();
-                    const missUpdate = document.getElementById('p1-miss');
-                    missUpdate.innerHTML = "P1 misses: " + missct;
-                    cpu_status = cpu.gameBoard.checkSunk();
-                    if (cpu_status) {
-                        gameOver(cpu);
-                    }
-                    cpuTurn();
-                }
-            })
+
+            const handleClick = function(event) {
+                handleCellClick(event, row, col);
+            }
+            cell.addEventListener('click', handleClick);
+            cellEventHandlers.push({ cell, handleClick });
+
             gridContainer1.appendChild(cell);
         }
     }
@@ -91,6 +100,14 @@ function gameOver(player) {
     } else {
         gameOverMessage = "You win! :)";
     }
+
+    const playercontainer = document.getElementById('grid-container-1');
+    const clickablebuttons = playercontainer.getElementsByClassName('grid-item');
+
+    cellEventHandlers.forEach(({ cell, handleClick }) => {
+        cell.removeEventListener('click', handleClick);
+    });
+
     const gameOverMessageHTML = document.createElement('h1');
     gameOverMessageHTML.innerHTML = gameOverMessage;
     startoverBtn.innerHTML = "startover";
